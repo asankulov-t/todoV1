@@ -9,16 +9,17 @@ function App() {
         {id:3, title:'React',isdone:false},
     ]
 
-    let tasks2:Array<TasksType>=[
-        {id:1, title:'Terminator',isdone:true},
-        {id:2, title:'Betmen',isdone:true},
-        {id:3, title:'Pretty Woman',isdone:true},
-    ]
+
+
+    //functions
+    const removeTask=(id:number)=>{
+        let res= tasks1.filter((item)=>item.id!==id)
+        console.log(res)
+    }
 
   return (
     <div className="App">
-      <Todolist title={'What to learn'} tasks={tasks1}/>
-      <Todolist title={'Songs'} tasks={tasks2}/>
+      <Todolist title={'What to learn'} tasks={tasks1} removeFunc={removeTask}/>
 
     </div>
   );
