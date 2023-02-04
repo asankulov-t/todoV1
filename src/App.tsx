@@ -13,7 +13,7 @@ function App() {
         {id:v1(), title:'React',isdone:false},
     ])
 
-    let [filter,setFilter]=useState<filterTypes>('active')
+    let [filter,setFilter]=useState<filterTypes>('all')
 
     const changeFilter=(value:filterTypes)=>{
         setFilter(value)
@@ -27,15 +27,32 @@ function App() {
     let taskFilter=tasks
 
     if (filter=="completed"){
-        taskFilter=tasks.filter((t)=>t.isdone==true)
+        taskFilter=tasks.filter((t)=>t.isdone===true)
     }
     if (filter=='active'){
-        taskFilter=tasks.filter((t)=>t.isdone==false)
+        taskFilter=tasks.filter((t)=>t.isdone===false)
     }
 
     const addNewTask=(value:string)=>{
         let newTask={id:v1(),title:value,isdone:false};
         setTasks([newTask,...tasks])
+    }
+
+    const changeStatus=(id:string,isdone:boolean)=>{
+        let res=tasks.map((t)=>{
+            if (t.id==id){
+                t.isdone=isdone
+                return t
+            }else return t
+        })
+        console.log(res)
+        setTasks(res)
+
+        // let task=tasks.find(t=>t.id==id);
+        // if (task){
+        //     task.isdone=isdone
+        // }
+        // setTasks([...tasks])
     }
 
   return (
@@ -45,6 +62,8 @@ function App() {
                 setFilter={changeFilter}
                 removeFunc={removeTask}
                 addNewTask={addNewTask}
+                changeStatus={changeStatus}
+                filter={filter}
       />
 
     </div>

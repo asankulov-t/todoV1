@@ -12,21 +12,28 @@ type PropsType = {
     tasks: Array<TasksType>,
     removeFunc: (id: string) => void,
     setFilter: (check: filterTypes) => void,
-    addNewTask: (value: string) => void
+    addNewTask: (value: string) => void,
+    changeStatus: (id: string, isdone: boolean) => void,
+    filter:filterTypes
 }
 
 const Todolist = (props: PropsType) => {
+    //hooks
     let [value, setValue] = useState('');
-
+    let [error, setError] = useState('')
     //local functions
     const addTaskLocalFunc = () => {
-        if (value.length != 0) {
-            props.addNewTask(value);
+        if (value.trim() !== '') {
+            props.addNewTask(value)
+            setValue('')
         }
-        setValue('')
+        if (value.length == 0) {
+            setError('Field is empty')
+        }
     }
     const onChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
         setValue(e.currentTarget.value)
+        setError('')
     }
     const onKeyPressEnter = (e: KeyboardEvent<HTMLInputElement>) => {
         if (e.charCode == 13) {
@@ -42,17 +49,24 @@ const Todolist = (props: PropsType) => {
         <div>
             <h3>{props.title}</h3>
             <div>
-                <input value={value}
-                       onChange={onChangeHandler}
-                       onKeyPress={onKeyPressEnter}
-                       type="text"/>
+                <input
+                    className={error ? 'error' : ''}
+                    value={value}
+                    onChange={onChangeHandler}
+                    onKeyPress={onKeyPressEnter}
+                    type="text"/>
                 <button onClick={addTaskLocalFunc}>+</button>
+                {error && <p className={'error-message'}>{error}</p>}
             </div>
             <ul>
                 {props.tasks.length !== 0 ?
                     props.tasks.map((task, ind) => {
-                        const deleteHandler = () => props.removeFunc(task.id)
-                        return <li key={ind}><input type='checkbox' checked={task.isdone}/><span>{task.title}</span>
+                        const changeStatusLocal = (id: string, isdone: boolean) => props.changeStatus(id, isdone)
+                        const deleteHandler = () => props.removeFunc(task.id);
+                        return <li className={task.isdone?'is-done':''} key={ind}><input type='checkbox'
+                                                    onClick={(e) => changeStatusLocal(task.id, e.currentTarget.checked)}
+                                                    checked={task.isdone}/>
+                            <span>{task.title}</span>
                             <button onClick={deleteHandler}>x</button>
                         </li>
                     }) : null
@@ -60,9 +74,9 @@ const Todolist = (props: PropsType) => {
 
             </ul>
             <div>
-                <button onClick={onFilterAll}>All</button>
-                <button onClick={onFilterActive}>Active</button>
-                <button onClick={onFilterCompleted}>Complete</button>
+                <button className={props.filter=='all'?'active-btn':''} onClick={onFilterAll}>All</button>
+                <button className={props.filter=='active'?'active-btn':''} onClick={onFilterActive}>Active</button>
+                <button className={props.filter=='completed'?'active-btn':''} onClick={onFilterCompleted}>Complete</button>
             </div>
         </div>
     );

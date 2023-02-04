@@ -1,3 +1,16 @@
 .App{
     display: flex;
 }
+.error {
+    border: red 1px solid;
+}
+.error-message {
+    color: red;
+}
+.is-done {
+    opacity: 0.5;
+}
+.active-btn{
+    background-color: cornflowerblue;
+    color: white;
+}
